@@ -17,7 +17,7 @@ class Auth
     public function handle(Request $request, Closure $next)
     {
         if (!$request->header('token')) {
-            dump('sdffs', $request);
+            return response('Unauthorized', 401);
         }
 
         return $next($request);
