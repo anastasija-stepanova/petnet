@@ -13,17 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('my_users', function (Blueprint $table) {
+        Schema::create('tokens', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->string('password');
-            $table->string('phone');
-            $table->string('telegram')->nullable();
-            $table->string('instagram')->nullable();
-            $table->string('photo')->nullable();
+            $table->unsignedBigInteger('user_id');
+            $table->text('token');
+            $table->dateTime('expired_date');
             $table->timestamps();
-            $table->softDeletes();
+            $table->foreign('user_id')->references('id')->on('my_users');
         });
     }
 
@@ -34,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('my_users');
+        Schema::dropIfExists('tokens');
     }
 };

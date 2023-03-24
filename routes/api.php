@@ -19,8 +19,9 @@ use App\Http\Controllers as Controllers;
 //    return $request->user();
 //});
 
+Route::post('/user', [Controllers\MyUserController::class, 'create']);
+
 Route::middleware(\App\Http\Middleware\Auth::class)->group(function () {
-    Route::post('/user', [Controllers\MyUserController::class, 'create']);
 
     Route::get('/user/{id}', [Controllers\MyUserController::class, 'get', 'id']);
 

@@ -22,15 +22,15 @@ class MyUserController extends Controller
                 'photo' => 'string',
                 'password' => ['required', 'string', 'min:8']
             ]);
-            MyUser::create(array_merge($data + [
-                    'password' => Hash::make($request->password),
-                ]));
+            $data['password'] = Hash::make($request->password);
+            MyUser::create($data);
             return 'User created successfully';
         } catch (\Exception $e) {
             if ($e->getCode() == 23000) {
                 return 'User with this email address already exists';
             }
         }
+        return 'User created failed';
     }
 
     public function get(string $id): MyUser

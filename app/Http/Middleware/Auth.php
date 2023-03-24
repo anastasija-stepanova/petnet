@@ -2,6 +2,8 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\MyUser;
+use App\Models\Token;
 use Closure;
 use Illuminate\Http\Request;
 
@@ -16,7 +18,8 @@ class Auth
      */
     public function handle(Request $request, Closure $next)
     {
-        if (!$request->header('token')) {
+        $userToken = Token::find(preg_match('/[0-9]+/', $request->getRequestUri()));
+        if (!$request->header('token') || $userToken->token !== $request->header('token')) {
             return response('Unauthorized', 401);
         }
 
