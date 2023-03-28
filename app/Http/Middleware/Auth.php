@@ -16,10 +16,18 @@ class Auth
      * @param \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse) $next
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
-    public function handle(Request $request, Closure $next)
+    public function handle(Request $request, Closure $next): \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
     {
-        $userToken = Token::find(preg_match('/[0-9]+/', $request->getRequestUri()));
-        if (!$request->header('token') || $userToken->token !== $request->header('token')) {
+        $userID = preg_match('/[0-9]+/', $request->getRequestUri());
+        $headerToken = $request->header('token');
+        if (!$userID) {
+            $userToken = Token::where('token', $headerToken)->first();
+        } else {
+            $userToken = Token::find();
+        }
+        $now = new \DateTime();
+        $now->setTimezone(new \DateTimeZone("UTC"));
+        if (!$headerToken || $userToken->token !== $headerToken || $userToken->expired_date < $now->format('Y-m-d h:m:s')) {
             return response('Unauthorized', 401);
         }
 

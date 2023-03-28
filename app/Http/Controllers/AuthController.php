@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-    public function auth(Request $request)
+    public function auth(Request $request): string
     {
         $request->validate([
             'email' => 'required|string|email',
@@ -29,13 +29,13 @@ class AuthController extends Controller
         $token = Auth::login($user);
         $tokenLifeTime = \DateInterval::createFromDateString('10 minutes');
         $userToken = Token::where('user_id', $user->id)->first();
+        $now = new \DateTime();
         if ($userToken) {
-            $tokenExpiredDate = new \DateTime($userToken->expired_date);
             $userToken->updateOrFail([
-                'expired_date' => $tokenExpiredDate->add($tokenLifeTime),
+                'expired_date' => $now->add($tokenLifeTime),
+                'token' => $token,
             ]);
         } else {
-            $now = new \DateTime();
             Token::create([
                 'user_id' => $user->id,
                 'token' => $token,

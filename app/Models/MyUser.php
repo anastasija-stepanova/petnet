@@ -15,12 +15,12 @@ class MyUser extends Authenticatable implements JWTSubject
     protected $table = 'my_users';
     protected $guarded = false;
 
-    public function getJWTIdentifier()
+    public function getJWTIdentifier(): mixed
     {
         return $this->getKey();
     }
 
-    public function getJWTCustomClaims()
+    public function getJWTCustomClaims(): array
     {
         return [];
     }

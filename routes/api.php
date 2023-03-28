@@ -22,12 +22,19 @@ use App\Http\Controllers as Controllers;
 Route::post('/user', [Controllers\MyUserController::class, 'create']);
 
 Route::middleware(\App\Http\Middleware\Auth::class)->group(function () {
-
     Route::get('/user/{id}', [Controllers\MyUserController::class, 'get', 'id']);
 
     Route::delete('/user/{id}', [Controllers\MyUserController::class, 'delete', 'id']);
 
     Route::post('/user/{id}', [Controllers\MyUserController::class, 'update', 'id']);
+
+    Route::post('/pet', [Controllers\PetController::class, 'create']);
+
+    Route::get('/pet/{id}', [Controllers\PetController::class, 'get', 'id']);
+
+    Route::delete('/pet/{id}', [Controllers\PetController::class, 'delete', 'id']);
+
+    Route::post('/pet/{id}', [Controllers\PetController::class, 'update', 'id']);
 });
 
 Route::post('/auth', [Controllers\AuthController::class, 'auth']);
