@@ -2,7 +2,6 @@
 
 namespace App\Http\Middleware;
 
-use App\Models\MyUser;
 use App\Models\Token;
 use Closure;
 use Illuminate\Http\Request;
