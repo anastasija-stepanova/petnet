@@ -2,26 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UserCreateRequest;
+use App\Http\Requests\UserUpdateRequest;
 use App\Models\MyUser;
-use Doctrine\Common\Lexer\Token;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class MyUserController extends Controller
 {
-    public function create(Request $request): string
+    public function create(UserCreateRequest $request): string
     {
         try {
-            $data = $request->validate([
-                'name' => ['required', 'string', 'max:255'],
-                'email' => ['required', 'string', 'email', 'max:255', 'unique:my_users'],
-                'phone' => ['required', 'string', 'min:11'],
-                'telegram' => 'string',
-                'instagram' => 'string',
-                'photo' => 'string',
-                'password' => ['required', 'string', 'min:8']
-            ]);
+            $data = $request->validated();
             $data['password'] = Hash::make($request->password);
             MyUser::create($data);
             return 'User created successfully';
@@ -45,18 +36,10 @@ class MyUserController extends Controller
         return 'User deleted successfully';
     }
 
-    public function update(Request $request, string $id): string
+    public function update(UserUpdateRequest $request, string $id): string
     {
         $user = MyUser::findOrFail($id);
-        $data = $request->validate([
-            'name' => ['string', 'max:255'],
-            'email' => ['string', 'email', 'max:255', 'unique:my_users'],
-            'phone' => ['string', 'min:11'],
-            'telegram' => 'string',
-            'instagram' => 'string',
-            'photo' => 'string',
-            'password' => ['string', 'min:8']
-        ]);
+        $data = $request->validated();
         $user->updateOrFail($data + [
                 'password' => Hash::make($request->password),
             ]);

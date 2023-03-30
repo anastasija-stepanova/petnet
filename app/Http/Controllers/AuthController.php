@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UserAuthRequest;
 use App\Models\MyUser;
 use App\Models\Token;
 use Illuminate\Http\Request;
@@ -10,12 +11,9 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-    public function auth(Request $request): string
+    public function auth(UserAuthRequest $request): string
     {
-        $request->validate([
-            'email' => 'required|string|email',
-            'password' => 'required|string',
-        ]);
+        $request->validated();
 
         $user = MyUser::where('email', $request->email)->first();
         $isCheckedPassword = Hash::check($request->password, $user->password);

@@ -2,24 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\MyUser;
+use App\Http\Requests\PetCreateRequest;
+use App\Http\Requests\PetUpdateRequest;
 use App\Models\Pet;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 
 class PetController extends Controller
 {
-    public function create(Request $request): string
+    public function create(PetCreateRequest $request): string
     {
         try {
-            $data = $request->validate([
-                'name' => ['required', 'string', 'max:255'],
-                'type' => ['required', 'integer'],
-                'breed' => ['required', 'integer'],
-                'age' => 'integer',
-                'gender' => 'integer',
-                'avatar' => 'string',
-            ]);
+            $data = $request->validated();
             Pet::create($data);
             return 'Pet created successfully';
         } catch (\Exception $e) {
@@ -39,17 +31,10 @@ class PetController extends Controller
         return 'Pet deleted successfully';
     }
 
-    public function update(Request $request, string $id): string
+    public function update(PetUpdateRequest $request, string $id): string
     {
         $pet = Pet::findOrFail($id);
-        $data = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'type' => ['required', 'integer'],
-            'breed' => ['required', 'integer'],
-            'age' => 'integer',
-            'gender' => 'integer',
-            'avatar' => 'string',
-        ]);
+        $data = $request->validated();
         $pet->updateOrFail($data);
         return 'Pet updated successfully';
     }
