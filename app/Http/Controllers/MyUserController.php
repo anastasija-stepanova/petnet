@@ -5,16 +5,23 @@ namespace App\Http\Controllers;
 use App\Http\Requests\UserCreateRequest;
 use App\Http\Requests\UserUpdateRequest;
 use App\Models\MyUser;
+use App\Services\UserService;
 use Illuminate\Support\Facades\Hash;
 
 class MyUserController extends Controller
 {
+    public UserService $service;
+
+    public function __construct(UserService $service)
+    {
+        $this->service = $service;
+    }
+
     public function create(UserCreateRequest $request): string
     {
         try {
             $data = $request->validated();
-            $data['password'] = Hash::make($request->password);
-            MyUser::create($data);
+            $this->service->create($data);
             return 'User created successfully';
         } catch (\Exception $e) {
             if ($e->getCode() == 23000) {
@@ -40,9 +47,7 @@ class MyUserController extends Controller
     {
         $user = MyUser::findOrFail($id);
         $data = $request->validated();
-        $user->updateOrFail($data + [
-                'password' => Hash::make($request->password),
-            ]);
+        $this->service->update($data, $user);
         return 'User updated successfully';
     }
 }
